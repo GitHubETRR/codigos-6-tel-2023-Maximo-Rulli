@@ -4,7 +4,8 @@
 class Matrix {
 private:
   // The matrix takes as input the number of rows and columns
-  int rows, cols;
+  int rows, cols, rank;
+  bool singular;
   std::vector<std::vector<float>> data;
 
 public:
@@ -12,6 +13,7 @@ public:
       : rows(m), cols(n), data(input) {}
   // This function prints the matrix
   void printMatrix() {
+    std::cout << "The matrix is:" << std::endl;
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < cols; j++) {
         std::cout << data[i][j] << " ";
@@ -22,14 +24,13 @@ public:
 
   // In this function we get the rowechelon form of the matrix
   // we also return the matrix rank
-  int rowEchelon() {
+  void rowEchelon() {
     // This variables will be used when performing vector operations
     std::vector<float> pivots;
     pivots.resize(rows);
     float factor = 0.0;
     bool iterated = false;
-
-    int rank = 0;
+    rank = 0;
 
     // Build copy of the matrix
     std::vector<std::vector<int>> rowEch(rows, std::vector<int>(cols, 0));
@@ -64,6 +65,7 @@ public:
     }
 
     // Print the row echelon form
+    std::cout << "The row-echelon form is:" << std::endl;
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < cols; j++) {
         std::cout << rowEch[i][j] << " ";
@@ -84,7 +86,20 @@ public:
         break;
       }
     }
-    return rank;
+    
+    
+    if (rank == rows && rank == cols){
+        singular = false;
+        std::cout << "The matrix is not singular" << std::endl;
+    }
+    else{
+        singular = true;
+        std::cout << "The matrix is singular" << std::endl;
+    }
+    
+    std::cout << "The matrix is rank " << rank << " " << std::endl;
+    
+    
   }
 };
 
@@ -95,6 +110,5 @@ int main() {
                                                {8.0, 2.0, 8.0, -6.0}};
   Matrix myMatrix(4, 4, inputData);
   myMatrix.printMatrix();
-  int mat_rank = myMatrix.rowEchelon();
-  std::cout << "The matrix is rank " << mat_rank << " " << std::endl;
+  myMatrix.rowEchelon();
 }
